@@ -354,10 +354,26 @@ main#post-main {
 	p a {
 		text-decoration: underline;
 	}
-
-	p a:hover {
-		color: green;
+	
+	a.external {
+		text-decoration: none;
+		transition: color 0.2s ease-in-out;
+		display: inline-flex;
+		align-items: center;
+		gap: 2px;
 	}
+	
+	a.external::after {
+		content: "↗";
+		font-family: monospace;
+		font-size: 0.85em;
+		display: inline-block;
+		transform: translateY(-1px);
+	}
+	
+	p a:hover {
+		text-decoration: underline;
+	}	
 }
 
 #post-inner>p,

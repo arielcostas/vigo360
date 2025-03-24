@@ -58,8 +58,13 @@ h1, h2, h3, h4, h5, h6 {
   @include heading;
 }
 
+a {
+  color: #007bff;
+}
+
 a, a:hover {
   text-decoration: none;
+  color: #0056b3;
 }
 
 .link {
