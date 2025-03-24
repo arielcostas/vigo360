@@ -1,9 +1,9 @@
 package templates
 
 import (
-	gmf "github.com/arielcostas/goldmark-figures"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
+	"vigo360.es/new/internal/goldmark_extensions"
 )
 
 var parser goldmark.Markdown = goldmark.New(
@@ -11,5 +11,5 @@ var parser goldmark.Markdown = goldmark.New(
 	goldmark.WithExtensions(extension.Typographer),
 	goldmark.WithExtensions(extension.GFM),
 	goldmark.WithExtensions(extension.Strikethrough),
-	goldmark.WithExtensions(gmf.Extension),
+	goldmark.WithExtensions(goldmark_extensions.Extension),
 )

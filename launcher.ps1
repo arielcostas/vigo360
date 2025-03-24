@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 # SPDX-FileCopyrightText: 2022-2025 Ariel Costas <ariel@costas.dev>
 #
 # SPDX-License-Identifier: BSD-3-Clause

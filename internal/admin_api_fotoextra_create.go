@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/chai2010/webp"
 	"io"
 	"net/http"
 	"os"
+
+	"github.com/chai2010/webp"
 
 	"github.com/thanhpk/randstr"
 	"vigo360.es/new/internal/logger"
