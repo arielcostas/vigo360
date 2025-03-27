@@ -330,7 +330,8 @@ main#post-main {
 	max-width: 90ch;
 	margin: 1rem auto;
 	text-align: justify;
-	hyphens: auto;
+	hyphens: none;
+	text-wrap-style: pretty;
 
 	font-weight: 500;
 
@@ -358,7 +359,6 @@ main#post-main {
 	a.external {
 		text-decoration: none;
 		transition: color 0.2s ease-in-out;
-		display: inline-flex;
 		align-items: center;
 		gap: 2px;
 	}

@@ -32,7 +32,7 @@
 			{{ else }}
 			<div id="authors-grid">
 				{{ range .Autores }}
-				<a  href="/autores/{{ .Id }}">
+				<a href="/autores/{{ .Id }}">
 					<div>
 						<img width="200" height="200" src="/static/profile/{{ .Id }}.jpg"
 							alt="Foto de perfil de {{ .Nombre }}">
@@ -47,6 +47,7 @@
 		{{ end }}
 	</main>
 	{{ template "_footer.html" }}
+	{{ template "_consent.html" }}
 </body>
 
 </html>

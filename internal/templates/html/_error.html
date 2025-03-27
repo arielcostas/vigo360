@@ -2,36 +2,37 @@
 <html lang="es">
 
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex">
 
-    <link rel="icon" href="/static/logo.png"/>
+    <link rel="icon" href="/static/logo.png" />
 
-    <link rel="stylesheet" href="/static/fonts/fonts.css"/>
-    <link rel="stylesheet" href="/static/main.css"/>
+    <link rel="stylesheet" href="/static/fonts/fonts.css" />
+    <link rel="stylesheet" href="/static/main.css" />
 
     <title>Error - Vigo360</title>
 </head>
 
 <body>
-{{ template "_header.html" }}
-<main>
-    <h1>Error {{ .ErrorCode }}</h1>
-    <p>{{ .Message }}</p>
+    {{ template "_header.html" }}
+    <main>
+        <h1>Error {{ .ErrorCode }}</h1>
+        <p>{{ .Message }}</p>
 
-    <hr>
+        <hr>
 
-    <p>Si el error persiste, por favor, contacte con el administrador del sitio.</p>
-    <a href="/" class="button button-primary">Volver a la página principal</a>
+        <p>Si el error persiste, por favor, contacte con el administrador del sitio.</p>
+        <a href="/" class="button button-primary">Volver a la página principal</a>
 
-    <hr>
+        <hr>
 
-    <pre>
+        <pre>
         RID <code>{{ .Rid }}</code> -- {{ .Time }} -- {{ .RequestedUrl }}
     </pre>
-</main>
-{{ template "_footer.html" }}
+    </main>
+    {{ template "_footer.html" }}
+    {{ template "_consent.html" }}
 </body>
 
 </html>
