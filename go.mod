@@ -13,7 +13,7 @@ require (
 require (
 	github.com/Masterminds/sprig/v3 v3.3.0
 	github.com/algolia/algoliasearch-client-go/v3 v3.31.4
-	github.com/chai2010/webp v1.1.1
+	github.com/chai2010/webp v1.4.0
 	github.com/go-playground/validator/v10 v10.26.0
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/kataras/hcaptcha v0.0.2
