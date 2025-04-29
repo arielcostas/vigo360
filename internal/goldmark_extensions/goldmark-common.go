@@ -78,13 +78,19 @@ func (r *render) renderImage(w util.BufWriter, source []byte, node ast.Node, ent
 		w.Write(util.EscapeHTML(util.URLEscape(n.Destination, true)))
 	}
 	w.WriteString(`" alt="`)
-	w.Write(n.Title)
+	w.Write(util.EscapeHTML(n.Text(source)))
 	w.WriteString(`" loading="lazy"`)
+
 	if n.Title != nil {
 		w.WriteString(` title="`)
 		r.Writer.Write(w, n.Title)
 		w.WriteByte('"')
+	} else {
+		w.WriteString(` title="`)
+		w.Write(util.EscapeHTML(altText))
+		w.WriteByte('"')
 	}
+
 	if n.Attributes() != nil {
 		html.RenderAttributes(w, n, html.ImageAttributeFilter)
 	}
