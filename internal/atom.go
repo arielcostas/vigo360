@@ -8,9 +8,7 @@ import (
 )
 
 // Using template.HTML to prevent HTML escaping of angle brackets in the XML
-var rawAtom template.HTML = `<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="/static/atom.xsl"?>
-<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="es-ES">
+var rawAtom template.HTML = `<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="es-ES">
 	<id>{{ .Dominio }}{{ .Path }}</id>
 	<title>{{ .Titulo }} - Vigo360</title>
 	<subtitle>{{ .Subtitulo }}</subtitle>
@@ -42,6 +40,14 @@ var rawAtom template.HTML = `<?xml version="1.0" encoding="UTF-8"?>
 
 // Modified to use a function that directly writes to the writer instead of using ExecuteTemplate
 func RenderAtom(w io.Writer, data atomParams) error {
+	_, err := io.WriteString(w, `<?xml version="1.0" encoding="UTF-8"?>
+	<?xml-stylesheet type="text/xsl" href="/static/atom.xsl"?>
+	`)
+
+	if err != nil {
+		return err
+	}
+
 	atomTemplate := template.Must(template.New("atom").Funcs(templates.Functions).Parse(string(rawAtom)))
 	return atomTemplate.Execute(w, data)
 }
