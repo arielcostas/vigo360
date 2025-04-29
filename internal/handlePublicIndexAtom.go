@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"bytes"
 	"net/http"
 	"os"
 	"time"
@@ -28,8 +27,10 @@ func (s *Server) handlePublicIndexAtom() http.HandlerFunc {
 
 		lastUpdate, _ := pp.ObtenerUltimaActualizacion()
 
-		var result bytes.Buffer
-		err = t.ExecuteTemplate(&result, "atom.xml", atomParams{
+		w.Header().Add("Content-Type", "application/atom+xml;charset=UTF-8")
+
+		// Using the new RenderAtom function that properly handles XML tags
+		err = RenderAtom(w, atomParams{
 			Dominio:    os.Getenv("DOMAIN"),
 			Path:       "/atom.xml",
 			Titulo:     "Publicaciones",
@@ -37,12 +38,11 @@ func (s *Server) handlePublicIndexAtom() http.HandlerFunc {
 			LastUpdate: lastUpdate.Format(time.RFC3339),
 			Entries:    pp,
 		})
+
 		if err != nil {
-			logger.Error("error recuperando publicaciones: %s", err.Error())
+			logger.Error("error generando feed atom: %s", err.Error())
 			s.handleError(r, w, 500, messages.ErrorRender)
 			return
 		}
-		w.Header().Add("Content-Type", "application/atom+xml;charset=UTF-8")
-		w.Write(result.Bytes())
 	}
 }

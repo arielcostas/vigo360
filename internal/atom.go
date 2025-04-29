@@ -2,13 +2,13 @@ package internal
 
 import (
 	"html/template"
+	"io"
 
 	"vigo360.es/new/internal/templates"
 )
 
-var t = template.Must(template.New("atom.xml").Funcs(templates.Functions).Parse(rawAtom))
-
-var rawAtom string = `<?xml version="1.0" encoding="UTF-8"?>
+// Using template.HTML to prevent HTML escaping of angle brackets in the XML
+var rawAtom template.HTML = `<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="/static/atom.xsl"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="es-ES">
 	<id>{{ .Dominio }}{{ .Path }}</id>
@@ -38,8 +38,13 @@ var rawAtom string = `<?xml version="1.0" encoding="UTF-8"?>
 		{{- end}}
 	</entry>
 	{{- end}}
-</feed>
-`
+</feed>`
+
+// Modified to use a function that directly writes to the writer instead of using ExecuteTemplate
+func RenderAtom(w io.Writer, data atomParams) error {
+	atomTemplate := template.Must(template.New("atom").Funcs(templates.Functions).Parse(string(rawAtom)))
+	return atomTemplate.Execute(w, data)
+}
 
 type atomParams struct {
 	Dominio    string
