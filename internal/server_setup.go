@@ -177,11 +177,12 @@ func (s *Server) SetupWebRoutes(router *mux.Router) *mux.Router {
 
 	newrouter.HandleFunc(`/policy`, s.handlePublicNodbPage()).Methods(http.MethodGet)
 	newrouter.HandleFunc(`/contacto`, s.handlePublicNodbPage()).Methods(http.MethodGet)
-
-	newrouter.HandleFunc(`/atom.xml`, s.handlePublicIndexAtom()).Methods(http.MethodGet)
-
-	newrouter.HandleFunc(`/sitemap.xml`, s.handlePublicSitemap()).Methods(http.MethodGet)
+	
 	newrouter.HandleFunc("/buscar", s.handlePublicBusqueda()).Methods(http.MethodGet)
+	
+	newrouter.HandleFunc(`/atom.xml`, s.handlePublicIndexAtom()).Methods(http.MethodGet)
+	newrouter.HandleFunc(`/sitemap.xml`, s.handlePublicSitemap()).Methods(http.MethodGet)
+	newrouter.HandleFunc("/robots.txt", s.handlePublicRobotsTxt()).Methods(http.MethodGet)
 
 	var indexnowkeyurl = fmt.Sprintf("/%s.txt", os.Getenv("INDEXNOW_KEY"))
 	newrouter.HandleFunc(indexnowkeyurl, s.handlePublicIndexnowKey()).Methods(http.MethodGet)
