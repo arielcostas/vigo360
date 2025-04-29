@@ -110,10 +110,27 @@ func (s *Server) SetupSecurityHeaders(router *mux.Router) *mux.Router {
 	var newrouter = router
 	newrouter.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// Add common security headers for all requests
 			w.Header().Add("X-Frame-Options", "SAMEORIGIN")
 			w.Header().Add("X-XSS-Protection", "1; mode=block")
 			w.Header().Add("X-Content-Type-Options", "nosniff")
 			w.Header().Add("Referrer-Policy", "same-origin")
+
+			// Check if this is a path that should skip CSP
+			path := r.URL.Path
+			// Skip CSP for plain text files and specific paths
+			if strings.HasSuffix(path, ".txt") ||
+				strings.HasSuffix(path, ".xml") ||
+				strings.HasSuffix(path, ".json") ||
+				path == "/atom.xml" ||
+				path == "/robots.txt" ||
+				path == "/sitemap.xml" {
+				// Skip adding CSP header
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			// Add CSP only for regular pages
 			w.Header().Add("Content-Security-Policy", "default-src 'self'; script-src 'self' https://hcaptcha.com https://*.hcaptcha.com; style-src 'self' https://hcaptcha.com https://*.hcaptcha.com; frame-src https://hcaptcha.com https://*.hcaptcha.com; connect-src 'self' https://hcaptcha.com https://*.hcaptcha.com; worker-src 'none'; frame-ancestors 'none'; img-src 'self' data:; upgrade-insecure-requests; base-uri 'self'; object-src 'none'; form-action 'self';")
 
 			next.ServeHTTP(w, r)

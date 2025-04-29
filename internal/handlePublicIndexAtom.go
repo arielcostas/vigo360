@@ -22,6 +22,9 @@ func (s *Server) handlePublicIndexAtom() http.HandlerFunc {
 
 		pp = pp.FiltrarPublicas()
 		pp = pp.FiltrarRetiradas()
+		if len(pp) > 20 {
+			pp = pp[:20]
+		}
 
 		lastUpdate, _ := pp.ObtenerUltimaActualizacion()
 
