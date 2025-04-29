@@ -101,7 +101,7 @@
 						alt="{{ .Trabajo.Alt_portada }}">
 					<figcaption>{{ .Trabajo.Alt_portada }}</figcaption>
 				</figure>
-				<h2 id="post-title">{{ .Trabajo.Titulo }}</h2>
+				<h1 id="post-title">{{ .Trabajo.Titulo }}</h1>
 				<p id="post-info">
 					<a class="link" href="/autores/{{ .Trabajo.Autor.Id }}">{{ .Trabajo.Autor.Nombre }}</a>
 					{{ dateDayMonth .Trabajo.Fecha_publicacion }} {{ if ne (dateDayMonth .Trabajo.Fecha_actualizacion)

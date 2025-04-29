@@ -10,7 +10,7 @@
 <body>
 	{{ template "_header.html" }}
 	<main id="sections">
-		<h2 id="section-title">Resultados de la búsqueda para {{ .Termino }}</h2>
+		<h1 id="section-title">Resultados de la búsqueda para {{ .Termino }}</h1>
 		<ul id="section-articles">
 			{{ range .Resultados }}
 			<li>

@@ -89,7 +89,7 @@
 		<div>
 			<div id="user-info">
 				<div>
-					<h2 id="section-title">{{ .Autor.Nombre }}</h2>
+					<h1 id="section-title">{{ .Autor.Nombre }}</h1>
 					<span id="user-role">{{ .Autor.Rol }}
 						{{ if .Autor.Web.Url}} &mdash;
 						<a class="link" href="{{.Autor.Web.Url}}">
@@ -156,7 +156,7 @@
 				{{ end }}
 			</section>
 			{{ else }}
-			<h2 class="user-section-title">No hay ningún artículo publicado</h2>
+			<p class="user-section-title">No hay ningún artículo publicado</p>
 			{{ end }}
 		</div>
 	</main>

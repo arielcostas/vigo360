@@ -33,7 +33,7 @@
 <body>
 	{{ template "_header.html" }}
 	<main id="sections">
-		<h2 id="section-title">{{ .Tag.Nombre }}</h2>
+		<h1 id="section-title">{{ .Tag.Nombre }}</h1>
 		<ul id="section-articles">
 			{{ if eq (len .Posts) 0 }}
 			<span>No hay ninguna publicación</span>
