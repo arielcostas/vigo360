@@ -39,10 +39,14 @@ var rawAtom template.HTML = `<feed xmlns="http://www.w3.org/2005/Atom" xml:lang=
 </feed>`
 
 // Modified to use a function that directly writes to the writer instead of using ExecuteTemplate
-func RenderAtom(w io.Writer, data atomParams) error {
-	_, err := io.WriteString(w, `<?xml version="1.0" encoding="UTF-8"?>
-	<?xml-stylesheet type="text/xsl" href="/static/atom.xsl"?>
+func RenderAtom(w io.Writer, data atomParams, useXsl bool) error {
+	if useXsl {
+		_, err := io.WriteString(w, `<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/static/atom.xsl"?>
 	`)
+	} else {
+		_, err := io.WriteString(w, `<?xml version="1.0" encoding="UTF-8"?>`)
+	}
 
 	if err != nil {
 		return err

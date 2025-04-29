@@ -3,6 +3,7 @@ package internal
 import (
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"vigo360.es/new/internal/logger"
@@ -27,7 +28,14 @@ func (s *Server) handlePublicIndexAtom() http.HandlerFunc {
 
 		lastUpdate, _ := pp.ObtenerUltimaActualizacion()
 
-		w.Header().Add("Content-Type", "application/atom+xml;charset=UTF-8")
+		accept := r.Header.Get("Accept")
+		prefersHTML := accept != "" && (accept == "*" || accept == "*/*" || containsMIME(accept, "text/html"))
+
+		if prefersHTML {
+			w.Header().Add("Content-Type", "application/xml")
+		} else {
+			w.Header().Add("Content-Type", "application/atom+xml;charset=UTF-8")
+		}
 
 		// Using the new RenderAtom function that properly handles XML tags
 		err = RenderAtom(w, atomParams{
@@ -37,7 +45,7 @@ func (s *Server) handlePublicIndexAtom() http.HandlerFunc {
 			Subtitulo:  "Últimas publicaciones en el sitio web de Vigo360",
 			LastUpdate: lastUpdate.Format(time.RFC3339),
 			Entries:    pp,
-		})
+		}, prefersHTML)
 
 		if err != nil {
 			logger.Error("error generando feed atom: %s", err.Error())
@@ -45,4 +53,16 @@ func (s *Server) handlePublicIndexAtom() http.HandlerFunc {
 			return
 		}
 	}
+}
+
+func containsMIME(s, mime string) bool {
+	for _, part := range strings.Split(s, ",") {
+		if i := strings.Index(part, ";"); i > -1 {
+			part = part[:i]
+		}
+		if strings.TrimSpace(part) == mime {
+			return true
+		}
+	}
+	return false
 }
