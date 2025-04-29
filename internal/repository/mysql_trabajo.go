@@ -15,7 +15,7 @@ func NewMysqlTrabajoStore(db *sqlx.DB) *MysqlTrabajoStore {
 
 func (s *MysqlTrabajoStore) Listar() (models.Trabajos, error) {
 	trabajos := make(models.Trabajos, 0)
-	query := `SELECT t.id, COALESCE(fecha_publicacion, ""), fecha_actualizacion, titulo, resumen, autor_id, autores.nombre as autor_nombre, autores.email as autor_email FROM trabajos t LEFT JOIN autores ON t.autor_id = autores.id ORDER BY fecha_publicacion;`
+	query := `SELECT t.id, COALESCE(fecha_publicacion, ""), fecha_actualizacion, titulo, resumen, alt_portada, autor_id, autores.nombre as autor_nombre, autores.email as autor_email FROM trabajos t LEFT JOIN autores ON t.autor_id = autores.id ORDER BY fecha_publicacion;`
 	rows, err := s.db.Query(query)
 
 	if err != nil {
