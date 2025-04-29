@@ -123,7 +123,7 @@
             <div id="post-share">
                 <div id="post-share-tags">
                     {{- range $i, $t := .Post.Tags}}
-                    <a href="/tags/{{ $t.Id }}">{{ $t.Nombre }}</a>
+                    <a href="/sections/{{ $t.Slug }}">{{ $t.Nombre }}</a>
                     {{- end }}
                 </div>
 

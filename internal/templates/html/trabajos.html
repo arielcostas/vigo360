@@ -13,7 +13,7 @@
 					"@type": "ListItem",
 					"position": 1,
 					"item": {
-						"@id": "/trabajos",
+						"@id": "/papers",
 						"name": "Trabajos"
 					}
 				}
@@ -32,7 +32,7 @@
 			{{ else }}
 			{{ range .Trabajos }}
 			<article>
-				<a href="/trabajos/{{.Id}}">
+				<a href="/papers/{{.Id}}">
 					<img width="620" height="345" src="/static/images/{{ .Id }}.webp" alt="{{ .Alt_portada }}"
 						title="{{ .Titulo }}">
 					<div>

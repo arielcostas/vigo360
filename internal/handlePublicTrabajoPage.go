@@ -58,7 +58,7 @@ func (s *Server) handlePublicTrabajoPage() http.HandlerFunc {
 			Meta: PageMeta{
 				Titulo:      trabajo.Titulo,
 				Descripcion: trabajo.Resumen,
-				Canonica:    fullCanonica("/trabajos/" + trabajo.Id),
+				Canonica:    fullCanonica("/papers/" + trabajo.Id),
 				Miniatura:   fullCanonica("/static/thumb/" + trabajo.Id + ".jpg"),
 				BaseUrl:     baseUrl(),
 			},

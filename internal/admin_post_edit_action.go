@@ -11,6 +11,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
+	"github.com/jmoiron/sqlx"
 	"vigo360.es/new/internal/database"
 	"vigo360.es/new/internal/logger"
 	"vigo360.es/new/internal/messages"
@@ -121,8 +122,33 @@ func (s *Server) handleAdminEditPostAction() http.HandlerFunc {
 				DOMAIN + "/post/" + publicacionId,
 			}
 
-			for _, t := range tags {
-				indexnowurls = append(indexnowurls, DOMAIN+"/tags/"+t)
+			// Fetch all tag slugs with a single query
+			if len(tags) > 0 {
+				// Create a query to fetch all tags at once
+				query, args, err := sqlx.In("SELECT id, slug FROM tags WHERE id IN (?)", tags)
+				if err != nil {
+					log.Error("error preparing tag slug query: %s", err.Error())
+				} else {
+					// Rebind the query for the specific database dialect
+					query = database.GetDB().Rebind(query)
+
+					// Execute the query
+					type TagSlug struct {
+						Id   string `db:"id"`
+						Slug string `db:"slug"`
+					}
+					var tagSlugs []TagSlug
+					err = database.GetDB().Select(&tagSlugs, query, args...)
+
+					if err != nil {
+						log.Error("error fetching tag slugs: %s", err.Error())
+					} else {
+						// Add section URLs for each tag
+						for _, tag := range tagSlugs {
+							indexnowurls = append(indexnowurls, DOMAIN+"/sections/"+tag.Slug)
+						}
+					}
+				}
 			}
 
 			err = seo.BingIndexnowRequest(indexnowurls)

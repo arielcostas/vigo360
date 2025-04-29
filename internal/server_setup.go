@@ -168,18 +168,22 @@ func (s *Server) SetupWebRoutes(router *mux.Router) *mux.Router {
 
 	newrouter.HandleFunc(`/post/{postid}`, cli.HandlerFunc(s.handlePublicEnviarComentario())).Methods(http.MethodPost)
 
-	newrouter.HandleFunc(`/tags`, s.handlePublicListTags()).Methods(http.MethodGet)
-	newrouter.HandleFunc(`/tags/{tagid}`, s.handlePublicTagPage()).Methods(http.MethodGet)
-	newrouter.HandleFunc(`/trabajos`, s.handlePublicListTrabajos()).Methods(http.MethodGet)
-	newrouter.HandleFunc(`/trabajos/{trabajoid}`, s.handlePublicTrabajoPage()).Methods(http.MethodGet)
+	newrouter.HandleFunc(`/tags`, s.handlePublicRedirectTags()).Methods(http.MethodGet)
+	newrouter.HandleFunc(`/tags/{tagid}`, s.handlePublicRedirectTagId()).Methods(http.MethodGet)
+	newrouter.HandleFunc(`/sections`, s.handlePublicListTags()).Methods(http.MethodGet)
+	newrouter.HandleFunc(`/sections/{tagid}`, s.handlePublicTagPage()).Methods(http.MethodGet)
+	newrouter.HandleFunc(`/papers`, s.handlePublicListTrabajos()).Methods(http.MethodGet)
+	newrouter.HandleFunc(`/papers/{trabajoid}`, s.handlePublicTrabajoPage()).Methods(http.MethodGet)
+	newrouter.HandleFunc(`/trabajos`, s.handlePublicRedirectTrabajos()).Methods(http.MethodGet)
+	newrouter.HandleFunc(`/trabajos/{trabajoid}`, s.handlePublicRedirectTrabajoId()).Methods(http.MethodGet)
 	newrouter.HandleFunc(`/autores/{id}`, s.handlePublicAutorPage()).Methods(http.MethodGet)
 	newrouter.HandleFunc(`/autores`, s.handlePublicListAutores()).Methods(http.MethodGet)
 
 	newrouter.HandleFunc(`/policy`, s.handlePublicNodbPage()).Methods(http.MethodGet)
 	newrouter.HandleFunc(`/contacto`, s.handlePublicNodbPage()).Methods(http.MethodGet)
-	
+
 	newrouter.HandleFunc("/buscar", s.handlePublicBusqueda()).Methods(http.MethodGet)
-	
+
 	newrouter.HandleFunc(`/atom.xml`, s.handlePublicIndexAtom()).Methods(http.MethodGet)
 	newrouter.HandleFunc(`/sitemap.xml`, s.handlePublicSitemap()).Methods(http.MethodGet)
 	newrouter.HandleFunc("/robots.txt", s.handlePublicRobotsTxt()).Methods(http.MethodGet)

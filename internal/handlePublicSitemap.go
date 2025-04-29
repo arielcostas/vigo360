@@ -61,21 +61,21 @@ func (s *Server) handlePublicSitemap() http.HandlerFunc {
 
 		pages = append(pages, SitemapQuery{Uri: "/", Changefreq: "daily", Priority: "0.8"})
 		pages = append(pages, SitemapQuery{Uri: "/autores", Changefreq: "monthly", Priority: "0.5"})
-		pages = append(pages, SitemapQuery{Uri: "/trabajos", Changefreq: "monthly", Priority: "0.5"})
-		pages = append(pages, SitemapQuery{Uri: "/tags", Changefreq: "monthly", Priority: "0.5"})
+		pages = append(pages, SitemapQuery{Uri: "/papers", Changefreq: "monthly", Priority: "0.5"})
+		pages = append(pages, SitemapQuery{Uri: "/sections", Changefreq: "monthly", Priority: "0.5"})
 
 		for _, autor := range autores {
 			pages = append(pages, SitemapQuery{Uri: "/autores/" + autor.Id, Changefreq: "weekly", Priority: "0.3"})
 		}
 		for _, tag := range tags {
-			pages = append(pages, SitemapQuery{Uri: "/tags/" + tag.Id, Changefreq: "weekly", Priority: "0.3"})
+			pages = append(pages, SitemapQuery{Uri: "/sections/" + tag.Slug, Changefreq: "weekly", Priority: "0.3"})
+		}
+		for _, trabajo := range trabajos {
+			pages = append(pages, SitemapQuery{Uri: "/papers/" + trabajo.Id, Changefreq: "weekly", Priority: "0.3"})
 		}
 
-		for _, trabajo := range trabajos {
-			pages = append(pages, SitemapQuery{Uri: "/trabajos/" + trabajo.Id, Changefreq: "monthly", Priority: "0.3"})
-		}
-		for _, post := range publicaciones {
-			pages = append(pages, SitemapQuery{Uri: "/post/" + post.Id, Changefreq: "monthly", Priority: "0.3"})
+		for _, publicacion := range publicaciones.FiltrarPublicas().FiltrarRetiradas() {
+			pages = append(pages, SitemapQuery{Uri: "/post/" + publicacion.Id, Changefreq: "monthly", Priority: "0.3"})
 		}
 
 		var domain = os.Getenv("DOMAIN")

@@ -13,7 +13,7 @@
 					"@type": "ListItem",
 					"position": 1,
 					"item": {
-						"@id": "/tags",
+						"@id": "/sections",
 						"name": "Secciones"
 					}
 				}
@@ -33,7 +33,7 @@
 		<ul id="section-articles">
 			{{ range .Tags }}
 			<li>
-				<a href="/tags/{{ .Id }}">
+				<a href="/sections/{{ .Slug }}">
 					<img src="/static/images/{{ .Ultima }}.webp" alt="Portada de {{ .Nombre }}">
 					<div>
 						<span class="article-author">{{ .Publicaciones }} artículos</span>

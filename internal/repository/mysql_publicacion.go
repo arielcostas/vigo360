@@ -20,7 +20,7 @@ func NewMysqlPublicacionStore(db *sqlx.DB) *MysqlPublicacionStore {
 
 func (s *MysqlPublicacionStore) Listar() (models.Publicaciones, error) {
 	publicaciones := make(models.Publicaciones, 0)
-	query := `SELECT p.id, COALESCE(fecha_publicacion, ""), fecha_actualizacion, COALESCE(legally_retired_at, ""), titulo, resumen, alt_portada, autor_id, autores.nombre as autor_nombre, autores.email as autor_email, COALESCE(GROUP_CONCAT(tags.id), "") as tags_ids, COALESCE(GROUP_CONCAT(tags.nombre), "") as tags_nombres FROM publicaciones p LEFT JOIN publicaciones_tags ON p.id = publicaciones_tags.publicacion_id LEFT JOIN tags ON publicaciones_tags.tag_id = tags.id LEFT JOIN autores ON p.autor_id = autores.id GROUP BY id ORDER BY fecha_publicacion DESC;`
+	query := `SELECT p.id, COALESCE(fecha_publicacion, ""), fecha_actualizacion, COALESCE(legally_retired_at, ""), titulo, resumen, alt_portada, autor_id, autores.nombre as autor_nombre, autores.email as autor_email, COALESCE(GROUP_CONCAT(tags.id), "") as tags_ids, COALESCE(GROUP_CONCAT(tags.nombre), "") as tags_nombres, COALESCE(GROUP_CONCAT(tags.slug), "") as tags_slugs FROM publicaciones p LEFT JOIN publicaciones_tags ON p.id = publicaciones_tags.publicacion_id LEFT JOIN tags ON publicaciones_tags.tag_id = tags.id LEFT JOIN autores ON p.autor_id = autores.id GROUP BY id ORDER BY fecha_publicacion DESC;`
 
 	rows, err := s.db.Query(query)
 
@@ -33,9 +33,10 @@ func (s *MysqlPublicacionStore) Listar() (models.Publicaciones, error) {
 			np            models.Publicacion
 			rawTagIds     string
 			rawTagNombres string
+			rawTagSlugs   string
 		)
 
-		err = rows.Scan(&np.Id, &np.Fecha_publicacion, &np.Fecha_actualizacion, &np.Legally_retired_at, &np.Titulo, &np.Resumen, &np.Alt_portada, &np.Autor.Id, &np.Autor.Nombre, &np.Autor.Email, &rawTagIds, &rawTagNombres)
+		err = rows.Scan(&np.Id, &np.Fecha_publicacion, &np.Fecha_actualizacion, &np.Legally_retired_at, &np.Titulo, &np.Resumen, &np.Alt_portada, &np.Autor.Id, &np.Autor.Nombre, &np.Autor.Email, &rawTagIds, &rawTagNombres, &rawTagSlugs)
 		if err != nil {
 			return models.Publicaciones{}, err
 		}
@@ -44,11 +45,16 @@ func (s *MysqlPublicacionStore) Listar() (models.Publicaciones, error) {
 			tags            = make([]models.Tag, 0)
 			splitTagIds     = strings.Split(rawTagIds, ",")
 			splitTagNombres = strings.Split(rawTagNombres, ",")
+			splitTagSlugs   = strings.Split(rawTagSlugs, ",")
 		)
 		for i := 0; i < len(splitTagIds); i++ {
+			if splitTagIds[i] == "" {
+				continue
+			}
 			tags = append(tags, models.Tag{
 				Id:     splitTagIds[i],
 				Nombre: splitTagNombres[i],
+				Slug:   splitTagSlugs[i],
 			})
 		}
 
@@ -106,7 +112,7 @@ func (s *MysqlPublicacionStore) Existe(id string) (bool, error) {
 
 func (s *MysqlPublicacionStore) ObtenerPorId(id string, requirePublic bool) (models.Publicacion, error) {
 	var post models.Publicacion
-	var query = `SELECT publicaciones.id, alt_portada, titulo, resumen, contenido, COALESCE(fecha_publicacion, ""), fecha_actualizacion,COALESCE(legally_retired_at, ""), autores.id as autor_id, autores.nombre as autor_nombre, autores.biografia as autor_biografia, autores.rol as autor_rol, COALESCE(GROUP_CONCAT(tags.id), "") as tags_ids, COALESCE(GROUP_CONCAT(tags.nombre), "") as tags_names
+	var query = `SELECT publicaciones.id, alt_portada, titulo, resumen, contenido, COALESCE(fecha_publicacion, ""), fecha_actualizacion,COALESCE(legally_retired_at, ""), autores.id as autor_id, autores.nombre as autor_nombre, autores.biografia as autor_biografia, autores.rol as autor_rol, COALESCE(GROUP_CONCAT(tags.id), "") as tags_ids, COALESCE(GROUP_CONCAT(tags.nombre), "") as tags_names, COALESCE(GROUP_CONCAT(tags.slug), "") as tags_slugs
 	FROM publicaciones
 	LEFT JOIN autores on publicaciones.autor_id = autores.id
 	LEFT JOIN publicaciones_tags ON publicaciones.id = publicaciones_tags.publicacion_id
@@ -118,9 +124,10 @@ func (s *MysqlPublicacionStore) ObtenerPorId(id string, requirePublic bool) (mod
 	var (
 		rawTagIds     string
 		rawTagNombres string
+		rawTagSlugs   string
 	)
 
-	var err = s.db.QueryRow(query, id).Scan(&post.Id, &post.Alt_portada, &post.Titulo, &post.Resumen, &post.Contenido, &post.Fecha_publicacion, &post.Fecha_actualizacion, &post.Legally_retired_at, &post.Autor.Id, &post.Autor.Nombre, &post.Autor.Biografia, &post.Autor.Rol, &rawTagIds, &rawTagNombres)
+	var err = s.db.QueryRow(query, id).Scan(&post.Id, &post.Alt_portada, &post.Titulo, &post.Resumen, &post.Contenido, &post.Fecha_publicacion, &post.Fecha_actualizacion, &post.Legally_retired_at, &post.Autor.Id, &post.Autor.Nombre, &post.Autor.Biografia, &post.Autor.Rol, &rawTagIds, &rawTagNombres, &rawTagSlugs)
 
 	if err != nil {
 		return models.Publicacion{}, err
@@ -131,16 +138,25 @@ func (s *MysqlPublicacionStore) ObtenerPorId(id string, requirePublic bool) (mod
 	}
 
 	tagIds := strings.Split(rawTagIds, ",")
+	tagNames := strings.Split(rawTagNombres, ",")
+	tagSlugs := strings.Split(rawTagSlugs, ",")
 
-	for id, tag := range strings.Split(rawTagNombres, ",") {
-		post.Tags = append(post.Tags, models.Tag{Id: tagIds[id], Nombre: tag})
+	for i := 0; i < len(tagIds); i++ {
+		if tagIds[i] == "" {
+			continue
+		}
+		post.Tags = append(post.Tags, models.Tag{
+			Id:     tagIds[i],
+			Nombre: tagNames[i],
+			Slug:   tagSlugs[i],
+		})
 	}
 
 	return post, nil
 }
 
 func (s *MysqlPublicacionStore) Buscar(termino string) (models.Publicaciones, error) {
-	var query = `SELECT p.id, COALESCE(fecha_publicacion, ""), fecha_actualizacion, titulo, resumen, alt_portada, autor_id, autores.nombre as autor_nombre, autores.email as autor_email, COALESCE(GROUP_CONCAT(tags.id), "") as tags_ids, COALESCE(GROUP_CONCAT(tags.nombre), "") as tags_nombres FROM publicaciones p LEFT JOIN publicaciones_tags ON p.id = publicaciones_tags.publicacion_id LEFT JOIN tags ON publicaciones_tags.tag_id = tags.id LEFT JOIN autores ON p.autor_id = autores.id WHERE MATCH(p.id, titulo, resumen, contenido, alt_portada) AGAINST (? IN NATURAL LANGUAGE MODE) GROUP BY id`
+	var query = `SELECT p.id, COALESCE(fecha_publicacion, ""), fecha_actualizacion, titulo, resumen, alt_portada, autor_id, autores.nombre as autor_nombre, autores.email as autor_email, COALESCE(GROUP_CONCAT(tags.id), "") as tags_ids, COALESCE(GROUP_CONCAT(tags.nombre), "") as tags_nombres, COALESCE(GROUP_CONCAT(tags.slug), "") as tags_slugs FROM publicaciones p LEFT JOIN publicaciones_tags ON p.id = publicaciones_tags.publicacion_id LEFT JOIN tags ON publicaciones_tags.tag_id = tags.id LEFT JOIN autores ON p.autor_id = autores.id WHERE MATCH(p.id, titulo, resumen, contenido, alt_portada) AGAINST (? IN NATURAL LANGUAGE MODE) GROUP BY id`
 
 	rows, err := s.db.Query(query, "*"+termino+"*")
 	if err != nil {
@@ -153,9 +169,10 @@ func (s *MysqlPublicacionStore) Buscar(termino string) (models.Publicaciones, er
 			np            models.Publicacion
 			rawTagIds     string
 			rawTagNombres string
+			rawTagSlugs   string
 		)
 
-		err = rows.Scan(&np.Id, &np.Fecha_publicacion, &np.Fecha_actualizacion, &np.Titulo, &np.Resumen, &np.Alt_portada, &np.Autor.Id, &np.Autor.Nombre, &np.Autor.Email, &rawTagIds, &rawTagNombres)
+		err = rows.Scan(&np.Id, &np.Fecha_publicacion, &np.Fecha_actualizacion, &np.Titulo, &np.Resumen, &np.Alt_portada, &np.Autor.Id, &np.Autor.Nombre, &np.Autor.Email, &rawTagIds, &rawTagNombres, &rawTagSlugs)
 		if err != nil {
 			return models.Publicaciones{}, err
 		}
@@ -164,11 +181,16 @@ func (s *MysqlPublicacionStore) Buscar(termino string) (models.Publicaciones, er
 			tags            = make([]models.Tag, 0)
 			splitTagIds     = strings.Split(rawTagIds, ",")
 			splitTagNombres = strings.Split(rawTagNombres, ",")
+			splitTagSlugs   = strings.Split(rawTagSlugs, ",")
 		)
 		for i := 0; i < len(splitTagIds); i++ {
+			if splitTagIds[i] == "" {
+				continue
+			}
 			tags = append(tags, models.Tag{
 				Id:     splitTagIds[i],
 				Nombre: splitTagNombres[i],
+				Slug:   splitTagSlugs[i],
 			})
 		}
 

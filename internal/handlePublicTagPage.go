@@ -21,21 +21,21 @@ func (s *Server) handlePublicTagPage() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		logger := logger.NewLogger(r.Context().Value(ridContextKey("rid")).(string))
-		req_tagid := mux.Vars(r)["tagid"]
+		tagslug := mux.Vars(r)["tagid"] // We keep the parameter name as "tagid" in the router but use it as slug
 
-		tag, err := s.store.tag.Obtener(req_tagid)
+		tag, err := s.store.tag.ObtenerPorSlug(tagslug)
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
-				logger.Error("no se encontró la tag: %s", err.Error())
+				logger.Error("no se encontró la tag con slug %s: %s", tagslug, err.Error())
 				s.handleError(r, w, 404, messages.ErrorPaginaNoEncontrada)
 			} else {
-				logger.Error("error recuperando la tag: %s", err.Error())
+				logger.Error("error recuperando la tag con slug %s: %s", tagslug, err.Error())
 				s.handleError(r, w, 500, messages.ErrorDatos)
 			}
 			return
 		}
 
-		publicaciones, err := s.store.publicacion.ListarPorTag(req_tagid)
+		publicaciones, err := s.store.publicacion.ListarPorTag(tag.Id)
 
 		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 			logger.Error("error recuperando publicaciones para tag: %s", err.Error())
@@ -50,7 +50,7 @@ func (s *Server) handlePublicTagPage() http.HandlerFunc {
 				Titulo:      tag.Nombre,
 				Keywords:    tag.Nombre,
 				Descripcion: "Publicaciones en Vigo360 sobre " + tag.Nombre,
-				Canonica:    fullCanonica("/tags/" + req_tagid),
+				Canonica:    fullCanonica("/sections/" + tag.Slug),
 				BaseUrl:     baseUrl(),
 			},
 		})

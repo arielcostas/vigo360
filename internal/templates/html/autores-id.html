@@ -41,7 +41,7 @@
 					"@type": "Article",
 					"headline": "{{ $trabajo.Titulo }}",
 					"image": "/static/images/{{ $trabajo.Id }}.webp",
-					"url": "{{ $baseUrl }}/trabajos/{{ $trabajo.Id }}",
+					"url": "{{ $baseUrl }}/papers/{{ $trabajo.Id }}",
 					"datePublished": "{{ $trabajo.Fecha_publicacion }}"
 				}
 				{{- end }}
@@ -117,7 +117,7 @@
 			<section class="user-list">
 				{{ range $i, $trabajo := .Trabajos }}
 				<div class="user-article">
-					<a class="link" href="/trabajos/{{ $trabajo.Id }}">
+					<a class="link" href="/papers/{{ $trabajo.Id }}">
 						<div>
 							<img class="user-article-thumbnail" src="/static/images/{{ $trabajo.Id }}.webp"
 								alt="{{ $trabajo.Alt_portada }}" title="{{ $trabajo.Alt_portada }}" {{ if gt $i 3 }}
