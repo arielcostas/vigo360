@@ -87,7 +87,7 @@ func (r *render) renderImage(w util.BufWriter, source []byte, node ast.Node, ent
 		w.WriteByte('"')
 	} else {
 		w.WriteString(` title="`)
-		w.Write(util.EscapeHTML(altText))
+		w.Write(util.EscapeHTML(n.Text(source)))
 		w.WriteByte('"')
 	}
 
