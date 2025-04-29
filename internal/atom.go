@@ -44,12 +44,14 @@ func RenderAtom(w io.Writer, data atomParams, useXsl bool) error {
 		_, err := io.WriteString(w, `<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="/static/atom.xsl"?>
 	`)
+		if err != nil {
+			return err
+		}
 	} else {
 		_, err := io.WriteString(w, `<?xml version="1.0" encoding="UTF-8"?>`)
-	}
-
-	if err != nil {
-		return err
+		if err != nil {
+			return err
+		}
 	}
 
 	atomTemplate := template.Must(template.New("atom").Funcs(templates.Functions).Parse(string(rawAtom)))
