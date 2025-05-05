@@ -511,6 +511,18 @@ code {
 	background: var(--gray);
 }
 
+.admin-bar {
+    background: cornsilk;
+    padding-inline: max(10vw, 3rem);
+    padding-block: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.admin-bar a {
+    margin-inline: 1rem;
+}
+
 #post-related-articles,
 #related-articles-header {
 	padding: 0 5% 1rem;

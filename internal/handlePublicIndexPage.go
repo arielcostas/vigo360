@@ -24,13 +24,6 @@ type indexParams struct {
 }
 
 func (s *Server) handlePublicIndex() http.HandlerFunc {
-	var meta = PageMeta{
-		Titulo:      "Inicio",
-		Descripcion: "Vigo360 es un proyecto dedicado a estudiar varios aspectos de la ciudad de Vigo (España) y su área de influencia, centrándose en la toponimia y el transporte.",
-		Canonica:    fullCanonica("/"),
-		BaseUrl:     baseUrl(),
-	}
-
 	return func(w http.ResponseWriter, r *http.Request) {
 		log := logger.NewLogger(r.Context().Value(ridContextKey("rid")).(string))
 		posts, err := s.store.publicacion.Listar()
@@ -73,11 +66,23 @@ func (s *Server) handlePublicIndex() http.HandlerFunc {
 			restantes -= 9
 		}
 
+		var title string
+		if pagina == 1 {
+			title = "Inicio"
+		} else {
+			title = "Artículos (página " + strconv.Itoa(pagina) + ")"
+		}
+
 		err = templates.Render(w, "index.html", indexParams{
 			CurrentPage: pagina,
 			PageCount:   cantidadPaginas,
 			Posts:       posts[inicio:limite],
-			Meta:        meta,
+			Meta: PageMeta{
+				Titulo:      title,
+				Descripcion: "Vigo360 es un proyecto dedicado a estudiar varios aspectos de la ciudad de Vigo (España) y su área de influencia, centrándose en la toponimia y el transporte.",
+				Canonica:    fullCanonica("/"),
+				BaseUrl:     baseUrl(),
+			},
 		})
 
 		if err != nil {

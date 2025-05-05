@@ -84,6 +84,19 @@
 </head>
 
 <body>
+    {{ $loggedIn := .LoggedIn}}
+    {{ if $loggedIn}}
+    <div class="admin-bar">
+        <div class="left">        
+            <a href="/admin/dashboard">Panel administrador</a>
+            <a href="/admin/post/{{ .Post.Id }}" target="_blank">Editar</a>
+        </div>
+        <div class="right">
+            <a href="/admin/profile">Mi perfil</a>
+            <a href="/admin/logout">Cerrar sesión</a>
+        </div>
+    </div>
+    {{ end }}
     {{ template "_header.html" }}
     <main id="post-main">
         <article>
@@ -194,7 +207,6 @@
 
         <section id="comment-section-container">
             <h2 id="comment_section_header">Comentarios</h2>
-            {{ $loggedIn := .LoggedIn}}
             <div id="comment_container">
                 {{ if eq (len .Comentarios) 0 }}
                 <p id="no_comments">No hay comentarios aún. ¡Sé el primero en comentar!</p>

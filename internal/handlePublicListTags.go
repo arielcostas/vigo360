@@ -76,9 +76,9 @@ func (s *Server) handlePublicListTags() http.HandlerFunc {
 		err = templates.Render(w, "tags.html", response{
 			Tags: tags,
 			Meta: PageMeta{
-				Titulo:      "Tags",
-				Descripcion: "Las diversas tags en las que se categorizan los artículos de Vigo360",
-				Canonica:    fullCanonica("/tags"),
+				Titulo:      "Secciones",
+				Descripcion: "Las diversas secciones en las que se categorizan los artículos de Vigo360",
+				Canonica:    fullCanonica("/sections"),
 				BaseUrl:     baseUrl(),
 			},
 		})
