@@ -104,7 +104,7 @@ main#authors>div {
 	background: #fff;
 }
 
-.main--authors > div {
+.main--authors>div {
 	max-width: 1024px;
 	margin: 0 auto 2rem;
 
@@ -115,7 +115,7 @@ main#authors>div {
 	background: #fff;
 }
 
-.main--tags-list > div {
+.main--tags-list>div {
 	max-width: 1024px;
 	margin: 0 auto 2rem;
 
@@ -379,14 +379,14 @@ main#post-main,
 	p a {
 		text-decoration: underline;
 	}
-	
+
 	a.external {
 		text-decoration: none;
 		transition: color 0.2s ease-in-out;
 		align-items: center;
 		gap: 2px;
 	}
-	
+
 	a.external::after {
 		content: "↗";
 		font-family: monospace;
@@ -394,10 +394,10 @@ main#post-main,
 		display: inline-block;
 		transform: translateY(-1px);
 	}
-	
+
 	p a:hover {
 		text-decoration: underline;
-	}	
+	}
 }
 
 #post-inner>p,
@@ -405,7 +405,11 @@ main#post-main,
 #post-inner>ol li {
 	font-size: 1.125rem;
 	margin-block-end: 1lh;
-	line-height: 1.8;
+	line-height: 1.8
+}
+
+#post-inner p:nth-last-of-type(1) {
+	margin-block-end: 0;
 }
 
 #post-inner blockquote p {
@@ -425,9 +429,9 @@ main#post-main,
 }
 
 #post-share {
-	padding: 0 3%;
+	padding: 0 1rem;
 	max-width: 85ch;
-	margin: 1rem auto;
+	margin: 2rem auto;
 
 	display: flex;
 	align-items: center;
@@ -536,15 +540,15 @@ code {
 }
 
 .admin-bar {
-    background: cornsilk;
-    padding-inline: max(10vw, 3rem);
-    padding-block: 0.5rem;
-    display: flex;
-    justify-content: space-between;
+	background: cornsilk;
+	padding-inline: max(10vw, 3rem);
+	padding-block: 0.5rem;
+	display: flex;
+	justify-content: space-between;
 }
 
 .admin-bar a {
-    margin-inline: 1rem;
+	margin-inline: 1rem;
 }
 
 #post-related-articles,
@@ -573,7 +577,7 @@ code {
 }
 
 .related-article-summary,
-.related-article-summary > * {
+.related-article-summary>* {
 	--webkit-line-clamp: 3;
 	line-clamp: 3;
 }
@@ -700,21 +704,21 @@ code {
 }
 
 .skip-to-content {
-  position: absolute;
-  left: 0;
-  top: 0;
-  background: #fff;
-  color: #222;
-  padding: 0.75rem 1.5rem;
-  z-index: 1000;
-  border-radius: 0 0 4px 4px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  font-weight: bold;
-  transform: translateY(-120%);
-  transition: transform 0.2s;
-  outline: none;
+	position: absolute;
+	left: 0;
+	top: 0;
+	background: #fff;
+	color: #222;
+	padding: 0.75rem 1.5rem;
+	z-index: 1000;
+	border-radius: 0 0 4px 4px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	font-weight: bold;
+	transform: translateY(-120%);
+	transition: transform 0.2s;
+	outline: none;
 }
 
 .skip-to-content:focus {
-  transform: translateY(0);
+	transform: translateY(0);
 }
