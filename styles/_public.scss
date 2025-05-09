@@ -104,15 +104,21 @@ main#authors>div {
 	background: #fff;
 }
 
+.main--authors {
+	text-align: center;
+	padding: unset !important
+}
+
+main#authors #section-title,
+.main--authors>h1#section-title {
+    max-width: unset !important;
+	padding: 2rem 0 1rem;
+}
+
 .main--authors>div {
-	max-width: 1024px;
 	margin: 0 auto 2rem;
 
 	padding: 1rem 2rem;
-	border-radius: 4px;
-	overflow: hidden;
-	box-shadow: var(--shadow);
-	background: #fff;
 }
 
 .main--tags-list>div {
@@ -126,7 +132,6 @@ main#authors>div {
 	background: #fff;
 }
 
-main#authors #section-title,
 #tags-list #section-title,
 .main--authors #section-title {
 	padding: 1rem 2rem 0 2rem;

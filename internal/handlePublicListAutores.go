@@ -38,7 +38,7 @@ func (s *Server) handlePublicListAutores() http.HandlerFunc {
 			return
 		}
 
-		err = templates.Render(w, "autores.html", Response{
+		err = templates.Render(w, "authors.html", Response{
 			Autores: autores,
 			Meta:    meta,
 		})

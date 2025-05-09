@@ -52,7 +52,7 @@ func (s *Server) handlePublicAutorPage() http.HandlerFunc {
 			return
 		}
 
-		err = templates.Render(w, "autores-id.html", Response{
+		err = templates.Render(w, "authors-id.html", Response{
 			Autor:    autor,
 			Posts:    publicaciones.FiltrarPublicas().FiltrarRetiradas(),
 			Trabajos: trabajos,
