@@ -41,7 +41,7 @@
 
 <body>
     {{ template "_header.html" }}
-    <main>
+    <main id="main-content" class="main--frontpage">
         <section id="frontpage-articles">
             {{ $page := .CurrentPage }}
             {{- range $i, $post := .Posts }}

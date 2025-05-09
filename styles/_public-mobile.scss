@@ -10,6 +10,7 @@
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 		-webkit-line-clamp: 4;
+		line-clamp: 4;
 	}
 
 	#user-info {
@@ -19,7 +20,8 @@
 		align-items: center;
 	}
 
-	main#authors #user-info #section-title {
+	main#authors #user-info #section-title,
+	.main--authors #user-info #section-title {
 		font-size: 1.75rem;
 	}
 

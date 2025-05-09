@@ -104,8 +104,31 @@ main#authors>div {
 	background: #fff;
 }
 
+.main--authors > div {
+	max-width: 1024px;
+	margin: 0 auto 2rem;
+
+	padding: 1rem 2rem;
+	border-radius: 4px;
+	overflow: hidden;
+	box-shadow: var(--shadow);
+	background: #fff;
+}
+
+.main--tags-list > div {
+	max-width: 1024px;
+	margin: 0 auto 2rem;
+
+	padding: 1rem 2rem;
+	border-radius: 4px;
+	overflow: hidden;
+	box-shadow: var(--shadow);
+	background: #fff;
+}
+
 main#authors #section-title,
-#tags-list #section-title {
+#tags-list #section-title,
+.main--authors #section-title {
 	padding: 1rem 2rem 0 2rem;
 }
 
@@ -166,7 +189,8 @@ main#authors #section-title,
 	padding: 1rem;
 }
 
-main#authors #user-info #section-title {
+main#authors #user-info #section-title,
+.main--authors #user-info #section-title {
 	font-size: 3rem;
 	padding: 0;
 }
@@ -303,7 +327,8 @@ main#authors #user-info #section-title {
 	height: auto;
 }
 
-main#post-main {
+main#post-main,
+.main--post {
 	background-color: white;
 	max-width: 1024px;
 	margin: 3rem auto;
@@ -312,10 +337,10 @@ main#post-main {
 }
 
 #post-title {
-	font-size: 3.5rem;
-	font-weight: 800;
+	font-size: 3rem;
+	font-weight: 900;
 	line-height: 1.25;
-	padding: 1rem 7% 0.5rem;
+	padding: 1rem 2rem;
 }
 
 #post-info {
@@ -329,7 +354,6 @@ main#post-main {
 	padding: 1rem 4%;
 	max-width: 90ch;
 	margin: 1rem auto;
-	text-align: justify;
 	hyphens: none;
 	text-wrap-style: pretty;
 
@@ -338,13 +362,13 @@ main#post-main {
 	h2 {
 		font-size: 2.25rem;
 		line-height: 1;
-		margin-bottom: 1rem;
+		margin-block: 1lh 1rem;
 	}
 
 	h3 {
 		font-size: 1.75rem;
 		line-height: 1;
-		margin-bottom: 1rem;
+		margin-block: 1lh 1rem;
 	}
 
 	p img {
@@ -379,8 +403,8 @@ main#post-main {
 #post-inner>p,
 #post-inner>ul li,
 #post-inner>ol li {
-	margin-bottom: 1rem;
-	font-size: 19px;
+	font-size: 1.125rem;
+	margin-block-end: 1lh;
 	line-height: 1.8;
 }
 
@@ -673,4 +697,24 @@ code {
 
 #tags-list>ul {
 	width: 100%;
+}
+
+.skip-to-content {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #fff;
+  color: #222;
+  padding: 0.75rem 1.5rem;
+  z-index: 1000;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  font-weight: bold;
+  transform: translateY(-120%);
+  transition: transform 0.2s;
+  outline: none;
+}
+
+.skip-to-content:focus {
+  transform: translateY(0);
 }

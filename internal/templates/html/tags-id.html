@@ -32,7 +32,7 @@
 
 <body>
 	{{ template "_header.html" }}
-	<main id="sections">
+	<main id="main-content" class="main--sections">
 		<h1 id="section-title">{{ .Tag.Nombre }}</h1>
 		<ul id="section-articles">
 			{{ if eq (len .Posts) 0 }}
