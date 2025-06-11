@@ -112,7 +112,7 @@ func (s *MysqlPublicacionStore) Existe(id string) (bool, error) {
 
 func (s *MysqlPublicacionStore) ObtenerPorId(id string, requirePublic bool) (models.Publicacion, error) {
 	var post models.Publicacion
-	var query = `SELECT publicaciones.id, alt_portada, titulo, resumen, contenido, COALESCE(fecha_publicacion, ""), fecha_actualizacion,COALESCE(p.legally_retired_at, ""), COALESCE(p.gone_at, ""), autores.id as autor_id, autores.nombre as autor_nombre, autores.biografia as autor_biografia, autores.rol as autor_rol, COALESCE(GROUP_CONCAT(tags.id), "") as tags_ids, COALESCE(GROUP_CONCAT(tags.nombre), "") as tags_names, COALESCE(GROUP_CONCAT(tags.slug), "") as tags_slugs
+	var query = `SELECT publicaciones.id, alt_portada, titulo, resumen, contenido, COALESCE(fecha_publicacion, ""), fecha_actualizacion,COALESCE(publicaciones.legally_retired_at, ""), COALESCE(publicaciones.gone_at, ""), autores.id as autor_id, autores.nombre as autor_nombre, autores.biografia as autor_biografia, autores.rol as autor_rol, COALESCE(GROUP_CONCAT(tags.id), "") as tags_ids, COALESCE(GROUP_CONCAT(tags.nombre), "") as tags_names, COALESCE(GROUP_CONCAT(tags.slug), "") as tags_slugs
 	FROM publicaciones
 	LEFT JOIN autores on publicaciones.autor_id = autores.id
 	LEFT JOIN publicaciones_tags ON publicaciones.id = publicaciones_tags.publicacion_id
