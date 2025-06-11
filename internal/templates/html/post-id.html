@@ -124,11 +124,12 @@
             {{ end }}
 
             <div id="post-inner">
-                {{ if eq .Post.Legally_retired_at "" }}
-                {{ .Post.Contenido | markdown }}
+                {{ if ne .Post.Legally_retired_at "" }}
+                <p id="post-legal-warning">Este artículo ha sido retirado por razones legales.</p>
+                {{ else if ne .Post.Gone_at ""}}
+                <p id="post-gone-warning">Este artículo ha sido retirado por voluntad de Vigo360.</p>
                 {{ else }}
-                <p>Este artículo ha sido retirado por razones legales a fecha de {{ dateDayMonth
-                    .Post.Legally_retired_at }}.</p>
+                {{ .Post.Contenido | markdown }}
                 {{ end }}
             </div>
 

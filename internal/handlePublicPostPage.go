@@ -80,6 +80,10 @@ func (s *Server) handlePublicPostPage() http.HandlerFunc {
 			w.WriteHeader(451)
 		}
 
+		if post.Gone_at != "" {
+			w.WriteHeader(410)
+		}
+
 		err = templates.Render(w, "post-id.html", Response{
 			Post:            post,
 			LoggedIn:        loggedIn,
