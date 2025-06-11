@@ -17,7 +17,7 @@ func NewMysqlAutorStore(db *sqlx.DB) *MysqlAutorStore {
 
 func (s *MysqlAutorStore) Listar() ([]models.Autor, error) {
 	var autores = make([]models.Autor, 0)
-	var rows, err = s.db.Query(`SELECT id, nombre, email, rol, biografia, COALESCE(gone_at, "") FROM autores`)
+	var rows, err = s.db.Query(`SELECT id, nombre, email, rol, biografia, COALESCE(a.gone_at, "") FROM autores a`)
 	if err != nil {
 		return []models.Autor{}, err
 	}

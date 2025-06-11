@@ -38,7 +38,7 @@ func (s *Server) handlePublicListAutores() http.HandlerFunc {
 			return
 		}
 
-		autoresFiltrados := models.Autores(autores)
+		autoresFiltrados := models.Autores(autores).FiltrarGone()
 
 		err = templates.Render(w, "authors.html", Response{
 			Autores: autoresFiltrados,

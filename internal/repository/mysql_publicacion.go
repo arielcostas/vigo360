@@ -20,7 +20,7 @@ func NewMysqlPublicacionStore(db *sqlx.DB) *MysqlPublicacionStore {
 
 func (s *MysqlPublicacionStore) Listar() (models.Publicaciones, error) {
 	publicaciones := make(models.Publicaciones, 0)
-	query := `SELECT p.id, COALESCE(fecha_publicacion, ""), fecha_actualizacion, COALESCE(legally_retired_at, ""), COALESCE(gone_at, ""), titulo, resumen, alt_portada, autor_id, autores.nombre as autor_nombre, autores.email as autor_email, COALESCE(GROUP_CONCAT(tags.id), "") as tags_ids, COALESCE(GROUP_CONCAT(tags.nombre), "") as tags_nombres, COALESCE(GROUP_CONCAT(tags.slug), "") as tags_slugs FROM publicaciones p LEFT JOIN publicaciones_tags ON p.id = publicaciones_tags.publicacion_id LEFT JOIN tags ON publicaciones_tags.tag_id = tags.id LEFT JOIN autores ON p.autor_id = autores.id GROUP BY id ORDER BY fecha_publicacion DESC;`
+	query := `SELECT p.id, COALESCE(fecha_publicacion, ""), fecha_actualizacion, COALESCE(p.legally_retired_at, ""), COALESCE(p.gone_at, ""), titulo, resumen, alt_portada, autor_id, autores.nombre as autor_nombre, autores.email as autor_email, COALESCE(GROUP_CONCAT(tags.id), "") as tags_ids, COALESCE(GROUP_CONCAT(tags.nombre), "") as tags_nombres, COALESCE(GROUP_CONCAT(tags.slug), "") as tags_slugs FROM publicaciones p LEFT JOIN publicaciones_tags ON p.id = publicaciones_tags.publicacion_id LEFT JOIN tags ON publicaciones_tags.tag_id = tags.id LEFT JOIN autores ON p.autor_id = autores.id GROUP BY id ORDER BY fecha_publicacion DESC;`
 
 	rows, err := s.db.Query(query)
 
@@ -112,7 +112,7 @@ func (s *MysqlPublicacionStore) Existe(id string) (bool, error) {
 
 func (s *MysqlPublicacionStore) ObtenerPorId(id string, requirePublic bool) (models.Publicacion, error) {
 	var post models.Publicacion
-	var query = `SELECT publicaciones.id, alt_portada, titulo, resumen, contenido, COALESCE(fecha_publicacion, ""), fecha_actualizacion,COALESCE(legally_retired_at, ""), COALESCE(gone_at, ""), autores.id as autor_id, autores.nombre as autor_nombre, autores.biografia as autor_biografia, autores.rol as autor_rol, COALESCE(GROUP_CONCAT(tags.id), "") as tags_ids, COALESCE(GROUP_CONCAT(tags.nombre), "") as tags_names, COALESCE(GROUP_CONCAT(tags.slug), "") as tags_slugs
+	var query = `SELECT publicaciones.id, alt_portada, titulo, resumen, contenido, COALESCE(fecha_publicacion, ""), fecha_actualizacion,COALESCE(p.legally_retired_at, ""), COALESCE(p.gone_at, ""), autores.id as autor_id, autores.nombre as autor_nombre, autores.biografia as autor_biografia, autores.rol as autor_rol, COALESCE(GROUP_CONCAT(tags.id), "") as tags_ids, COALESCE(GROUP_CONCAT(tags.nombre), "") as tags_names, COALESCE(GROUP_CONCAT(tags.slug), "") as tags_slugs
 	FROM publicaciones
 	LEFT JOIN autores on publicaciones.autor_id = autores.id
 	LEFT JOIN publicaciones_tags ON publicaciones.id = publicaciones_tags.publicacion_id
