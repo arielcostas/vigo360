@@ -17,14 +17,14 @@ func NewMysqlAutorStore(db *sqlx.DB) *MysqlAutorStore {
 
 func (s *MysqlAutorStore) Listar() ([]models.Autor, error) {
 	var autores = make([]models.Autor, 0)
-	var rows, err = s.db.Query(`SELECT id, nombre, email, rol, biografia FROM autores`)
+	var rows, err = s.db.Query(`SELECT id, nombre, email, rol, biografia, COALESCE(gone_at, "") FROM autores`)
 	if err != nil {
 		return []models.Autor{}, err
 	}
 
 	for rows.Next() {
 		var na models.Autor
-		err = rows.Scan(&na.Id, &na.Nombre, &na.Email, &na.Rol, &na.Biografia)
+		err = rows.Scan(&na.Id, &na.Nombre, &na.Email, &na.Rol, &na.Biografia, &na.Gone_at)
 		if err != nil {
 			return []models.Autor{}, err
 		}

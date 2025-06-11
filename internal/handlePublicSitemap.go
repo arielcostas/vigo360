@@ -8,6 +8,7 @@ import (
 
 	"vigo360.es/new/internal/logger"
 	"vigo360.es/new/internal/messages"
+	"vigo360.es/new/internal/models"
 )
 
 type SitemapQuery struct {
@@ -34,6 +35,8 @@ func (s *Server) handlePublicSitemap() http.HandlerFunc {
 			return
 		}
 
+		autoresFiltrados := models.Autores(autores).FiltrarGone()
+
 		trabajos, err := s.store.trabajo.Listar()
 		if err != nil {
 			logger.Error("error recuperando trabajos: %s", err.Error())
@@ -58,13 +61,14 @@ func (s *Server) handlePublicSitemap() http.HandlerFunc {
 		trabajos = trabajos.FiltrarPublicos()
 		publicaciones = publicaciones.FiltrarPublicas()
 		publicaciones = publicaciones.FiltrarRetiradas()
+		publicaciones = publicaciones.FiltrarGone()
 
 		pages = append(pages, SitemapQuery{Uri: "/", Changefreq: "daily", Priority: "0.8"})
 		pages = append(pages, SitemapQuery{Uri: "/autores", Changefreq: "monthly", Priority: "0.5"})
 		pages = append(pages, SitemapQuery{Uri: "/papers", Changefreq: "monthly", Priority: "0.5"})
 		pages = append(pages, SitemapQuery{Uri: "/sections", Changefreq: "monthly", Priority: "0.5"})
 
-		for _, autor := range autores {
+		for _, autor := range autoresFiltrados { // Use filtered list
 			pages = append(pages, SitemapQuery{Uri: "/autores/" + autor.Id, Changefreq: "weekly", Priority: "0.3"})
 		}
 		for _, tag := range tags {

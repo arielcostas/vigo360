@@ -38,6 +38,12 @@ func (s *Server) handlePublicAutorPage() http.HandlerFunc {
 			return
 		}
 
+		if autor.Gone_at != "" {
+			logger.Info("autor %s marcado como gone, devolviendo 410", autor.Id)
+			s.handleError(r, w, 410, "Este autor ya no está disponible.")
+			return
+		}
+
 		publicaciones, err := s.store.publicacion.ListarPorAutor(autor.Id)
 		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 			logger.Error("error recuperando publicaciones: %s", err.Error())
@@ -54,7 +60,7 @@ func (s *Server) handlePublicAutorPage() http.HandlerFunc {
 
 		err = templates.Render(w, "authors-id.html", Response{
 			Autor:    autor,
-			Posts:    publicaciones.FiltrarPublicas().FiltrarRetiradas(),
+			Posts:    publicaciones.FiltrarPublicas().FiltrarRetiradas().FiltrarGone(),
 			Trabajos: trabajos,
 			Meta: PageMeta{
 				Titulo:      autor.Nombre,
