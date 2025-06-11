@@ -27,12 +27,15 @@ func (ps Publicaciones) FiltrarPublicas() Publicaciones {
 	return nps
 }
 
-// FiltrarRetiradas Devuelve un slice con solo las publicaciones retiradas por razones legales
+// FiltrarRetiradas Devuelve un slice quitando las publicaciones retiradas por ley o de un autor retirado
 func (ps Publicaciones) FiltrarRetiradas() Publicaciones {
 	var nps Publicaciones
 
 	for _, p := range ps {
 		if p.Legally_retired_at != "" {
+			continue
+		}
+		if p.Gone_at != "" {
 			continue
 		}
 

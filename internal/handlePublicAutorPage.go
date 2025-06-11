@@ -39,7 +39,7 @@ func (s *Server) handlePublicAutorPage() http.HandlerFunc {
 		}
 
 		if autor.Gone_at != "" {
-			logger.Info("autor %s marcado como gone, devolviendo 410", autor.Id)
+			logger.Information("autor %s marcado como gone, devolviendo 410", autor.Id)
 			s.handleError(r, w, 410, "Este autor ya no está disponible.")
 			return
 		}
@@ -60,7 +60,7 @@ func (s *Server) handlePublicAutorPage() http.HandlerFunc {
 
 		err = templates.Render(w, "authors-id.html", Response{
 			Autor:    autor,
-			Posts:    publicaciones.FiltrarPublicas().FiltrarRetiradas().FiltrarGone(),
+			Posts:    publicaciones.FiltrarPublicas().FiltrarRetiradas(),
 			Trabajos: trabajos,
 			Meta: PageMeta{
 				Titulo:      autor.Nombre,
