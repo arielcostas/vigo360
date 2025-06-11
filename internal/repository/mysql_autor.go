@@ -36,8 +36,8 @@ func (s *MysqlAutorStore) Listar() ([]models.Autor, error) {
 
 func (s *MysqlAutorStore) Obtener(autor_id string) (models.Autor, error) {
 	var autor models.Autor
-	var row = s.db.QueryRow(`SELECT id, nombre, email, rol, biografia, web_url, web_titulo FROM autores WHERE id=?`, autor_id)
-	var err = row.Scan(&autor.Id, &autor.Nombre, &autor.Email, &autor.Rol, &autor.Biografia, &autor.Web.Url, &autor.Web.Titulo)
+	var row = s.db.QueryRow(`SELECT id, nombre, email, rol, biografia, web_url, web_titulo, COALESCE(gone_at, "") FROM autores WHERE id=?`, autor_id)
+	var err = row.Scan(&autor.Id, &autor.Nombre, &autor.Email, &autor.Rol, &autor.Biografia, &autor.Web.Url, &autor.Web.Titulo, &autor.Gone_at)
 
 	if err != nil {
 		return models.Autor{}, err
