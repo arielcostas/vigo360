@@ -87,7 +87,7 @@
     {{ $loggedIn := .LoggedIn}}
     {{ if $loggedIn}}
     <div class="admin-bar">
-        <div class="left">        
+        <div class="left">
             <a href="/admin/dashboard">Panel administrador</a>
             <a href="/admin/post/{{ .Post.Id }}" target="_blank">Editar</a>
         </div>
@@ -98,6 +98,23 @@
     </div>
     {{ end }}
     {{ template "_header.html" }}
+    {{ if ne .Post.Legally_retired_at "" }}
+    <main id="main-content" class="main--post">
+        <article>
+            <div class="post-inner">
+                <p>Este artículo ha sido retirado por razones legales.</p>
+            </div>
+        </article>
+    </main>
+    {{ else if ne .Post.Gone_at ""}}
+        <main id="main-content" class="main--post">
+            <article>
+                <div class="post-inner">
+                    <p>Este artículo ya no está disponible.</p>
+                </div>
+            </article>
+        </main>
+    {{ else }}
     <main id="main-content" class="main--post">
         <article>
             {{ if eq .Post.Legally_retired_at "" }}
@@ -124,16 +141,9 @@
             {{ end }}
 
             <div id="post-inner">
-                {{ if ne .Post.Legally_retired_at "" }}
-                <p id="post-legal-warning">Este artículo ha sido retirado por razones legales.</p>
-                {{ else if ne .Post.Gone_at ""}}
-                <p id="post-gone-warning">Este artículo ha sido retirado por voluntad de Vigo360.</p>
-                {{ else }}
                 {{ .Post.Contenido | markdown }}
-                {{ end }}
             </div>
 
-            {{ if eq .Post.Legally_retired_at "" }}
             <div id="post-share">
                 <div id="post-share-tags">
                     {{- range $i, $t := .Post.Tags}}
@@ -167,7 +177,6 @@
                     </a>
                 </div>
             </div>
-            {{ end }}
         </article>
 
         <section id="post-author-container">
@@ -185,7 +194,6 @@
             </a>
         </section>
 
-        {{ if eq (.Post.Legally_retired_at) "" }}
         {{ if ne (len .Recommendations) 0}}
         <h2 id="related-articles-header">Artículos recomendados</h2>
         <section id="post-related-articles">
@@ -227,8 +235,9 @@
             {{ template "form_comentario" }}
             {{ end }}
         </section>
-        {{ end }}
     </main>
+    {{ end }}
+
     {{ template "_footer.html" }}
     {{ template "_consent.html" }}
 </body>
