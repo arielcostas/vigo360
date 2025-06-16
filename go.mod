@@ -19,7 +19,7 @@ require (
 	github.com/kataras/hcaptcha v0.0.2
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/thanhpk/randstr v1.0.6
-	golang.org/x/crypto v0.38.0
+	golang.org/x/crypto v0.39.0
 )
 
 require (
@@ -37,7 +37,7 @@ require (
 	github.com/shopspring/decimal v1.4.0 // indirect
 	github.com/spf13/cast v1.7.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
-	golang.org/x/text v0.25.0 // indirect
+	golang.org/x/text v0.26.0 // indirect
 )
 
 require (
