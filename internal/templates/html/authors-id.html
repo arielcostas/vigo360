@@ -45,7 +45,7 @@
 				}
 				{{- end }}
 				{{- $lenPosts := len .Posts }}
-				{{- range $i, $post := slice .Posts 0 10  }}
+				{{- range $i, $post := slice .Posts 0 (min 10 (len .Posts)) }}
 				{
 					"@context": "https://schema.org",
 					"@type": "BlogPosting",
