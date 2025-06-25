@@ -6,6 +6,7 @@ import (
 	"errors"
 	"html/template"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"vigo360.es/new/internal/logger"
@@ -112,6 +113,7 @@ func buildAuthorJSONLD(autor models.Autor, trabajos models.Trabajos, posts model
 		Image         string `json:"image"`
 		Url           string `json:"url"`
 		DatePublished string `json:"datePublished"`
+		Author        Person `json:"author,omitempty"`
 	}
 
 	type BlogPosting = Article
@@ -134,6 +136,22 @@ func buildAuthorJSONLD(autor models.Autor, trabajos models.Trabajos, posts model
 				Name string `json:"name"`
 			} `json:"item"`
 		} `json:"itemListElement"`
+	}
+
+	// Helper to format date in ISO 8601 with system timezone
+	formatISO8601 := func(dateStr string) string {
+		if dateStr == "" {
+			return ""
+		}
+		// Try to parse as RFC3339 or fallback to "2006-01-02 15:04:05" (common in Go/SQL)
+		t, err := time.Parse(time.RFC3339, dateStr)
+		if err != nil {
+			t, err = time.Parse("2006-01-02 15:04:05", dateStr)
+			if err != nil {
+				return dateStr // fallback: return as is
+			}
+		}
+		return t.Format(time.RFC3339)
 	}
 
 	// Build Person
@@ -167,7 +185,8 @@ func buildAuthorJSONLD(autor models.Autor, trabajos models.Trabajos, posts model
 			Headline:      t.Titulo,
 			Image:         "/static/images/" + t.Id + ".webp",
 			Url:           string(baseUrl()) + "/papers/" + t.Id,
-			DatePublished: t.Fecha_publicacion,
+			DatePublished: formatISO8601(t.Fecha_publicacion),
+			Author:        person,
 		})
 	}
 	for i, p := range posts {
@@ -180,7 +199,8 @@ func buildAuthorJSONLD(autor models.Autor, trabajos models.Trabajos, posts model
 			Headline:      p.Titulo,
 			Image:         "/static/images/" + p.Id + ".webp",
 			Url:           string(baseUrl()) + "/post/" + p.Id,
-			DatePublished: p.Fecha_publicacion,
+			DatePublished: formatISO8601(p.Fecha_publicacion),
+			Author:        person,
 		})
 	}
 
