@@ -117,10 +117,10 @@ func buildAuthorJSONLD(autor models.Autor, trabajos models.Trabajos, posts model
 	type BlogPosting = Article
 
 	type ProfilePage struct {
-		Context          string        `json:"@context"`
-		Type             string        `json:"@type"`
-		MainEntityOfPage Person        `json:"mainEntityOfPage"`
-		HasPart          []interface{} `json:"hasPart"`
+		Context    string        `json:"@context"`
+		Type       string        `json:"@type"`
+		MainEntity Person        `json:"mainEntity"`
+		HasPart    []interface{} `json:"hasPart"`
 	}
 
 	type BreadcrumbList struct {
@@ -185,10 +185,10 @@ func buildAuthorJSONLD(autor models.Autor, trabajos models.Trabajos, posts model
 	}
 
 	profilePage := ProfilePage{
-		Context:          "https://schema.org",
-		Type:             "ProfilePage",
-		MainEntityOfPage: person,
-		HasPart:          hasPart,
+		Context:    "https://schema.org",
+		Type:       "ProfilePage",
+		MainEntity: person,
+		HasPart:    hasPart,
 	}
 
 	// BreadcrumbList
