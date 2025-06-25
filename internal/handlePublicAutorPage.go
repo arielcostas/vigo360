@@ -2,6 +2,7 @@ package internal
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"net/http"
 
@@ -18,6 +19,7 @@ func (s *Server) handlePublicAutorPage() http.HandlerFunc {
 		Posts    models.Publicaciones
 		Trabajos models.Trabajos
 		Meta     PageMeta
+		JSONLD   string
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -58,9 +60,12 @@ func (s *Server) handlePublicAutorPage() http.HandlerFunc {
 			return
 		}
 
+		posts := publicaciones.FiltrarPublicas().FiltrarRetiradas()
+		jsonld := buildAuthorJSONLD(autor, trabajos, posts)
+
 		err = templates.Render(w, "authors-id.html", Response{
 			Autor:    autor,
-			Posts:    publicaciones.FiltrarPublicas().FiltrarRetiradas(),
+			Posts:    posts,
 			Trabajos: trabajos,
 			Meta: PageMeta{
 				Titulo:      autor.Nombre,
@@ -68,6 +73,7 @@ func (s *Server) handlePublicAutorPage() http.HandlerFunc {
 				Canonica:    fullCanonica("/autores/" + autor.Id),
 				BaseUrl:     baseUrl(),
 			},
+			JSONLD: jsonld,
 		})
 
 		if err != nil {
@@ -75,4 +81,153 @@ func (s *Server) handlePublicAutorPage() http.HandlerFunc {
 			s.handleError(r, w, 500, messages.ErrorDatos)
 		}
 	}
+}
+
+// --- JSON-LD builder for author page ---
+func buildAuthorJSONLD(autor models.Autor, trabajos models.Trabajos, posts models.Publicaciones) string {
+	type Person struct {
+		Context       string   `json:"@context"`
+		Type          string   `json:"@type"`
+		Name          string   `json:"name"`
+		AlternateName string   `json:"alternateName"`
+		Identifier    string   `json:"identifier"`
+		Email         string   `json:"email,omitempty"`
+		JobTitle      string   `json:"jobTitle"`
+		Image         string   `json:"image"`
+		SameAs        []string `json:"sameAs,omitempty"`
+		WorksFor      struct {
+			Context string `json:"@context"`
+			Type    string `json:"@type"`
+			Name    string `json:"name"`
+			Url     string `json:"url"`
+		} `json:"worksFor"`
+		Url string `json:"url"`
+	}
+
+	type Article struct {
+		Context       string `json:"@context"`
+		Type          string `json:"@type"`
+		Headline      string `json:"headline"`
+		Image         string `json:"image"`
+		Url           string `json:"url"`
+		DatePublished string `json:"datePublished"`
+	}
+
+	type BlogPosting = Article
+
+	type ProfilePage struct {
+		Context          string        `json:"@context"`
+		Type             string        `json:"@type"`
+		MainEntityOfPage Person        `json:"mainEntityOfPage"`
+		HasPart          []interface{} `json:"hasPart"`
+	}
+
+	type BreadcrumbList struct {
+		Context         string `json:"@context"`
+		Type            string `json:"@type"`
+		ItemListElement []struct {
+			Type     string `json:"@type"`
+			Position int    `json:"position"`
+			Item     struct {
+				Id   string `json:"@id"`
+				Name string `json:"name"`
+			} `json:"item"`
+		} `json:"itemListElement"`
+	}
+
+	// Build Person
+	person := Person{
+		Context:       "https://schema.org",
+		Type:          "Person",
+		Name:          autor.Nombre,
+		AlternateName: autor.Id,
+		Identifier:    autor.Id,
+		JobTitle:      autor.Rol,
+		Image:         "/static/profile/" + autor.Id + ".jpg",
+		Url:           "https://vigo360.es/autores/" + autor.Id,
+	}
+	if autor.Email != "" {
+		person.Email = "mailto:" + autor.Email
+	}
+	if autor.Web.Url != "" {
+		person.SameAs = []string{autor.Web.Url}
+	}
+	person.WorksFor.Context = "https://schema.org"
+	person.WorksFor.Type = "Organization"
+	person.WorksFor.Name = "Vigo360"
+	person.WorksFor.Url = "https://vigo360.es"
+
+	// Build hasPart (Trabajos + up to 10 Posts)
+	hasPart := []interface{}{}
+	for _, t := range trabajos {
+		hasPart = append(hasPart, Article{
+			Context:       "https://schema.org",
+			Type:          "Article",
+			Headline:      t.Titulo,
+			Image:         "/static/images/" + t.Id + ".webp",
+			Url:           baseUrl() + "/papers/" + t.Id,
+			DatePublished: t.Fecha_publicacion,
+		})
+	}
+	for i, p := range posts {
+		if i >= 10 {
+			break
+		}
+		hasPart = append(hasPart, BlogPosting{
+			Context:       "https://schema.org",
+			Type:          "BlogPosting",
+			Headline:      p.Titulo,
+			Image:         "/static/images/" + p.Id + ".webp",
+			Url:           baseUrl() + "/post/" + p.Id,
+			DatePublished: p.Fecha_publicacion,
+		})
+	}
+
+	profilePage := ProfilePage{
+		Context:          "https://schema.org",
+		Type:             "ProfilePage",
+		MainEntityOfPage: person,
+		HasPart:          hasPart,
+	}
+
+	// BreadcrumbList
+	breadcrumb := BreadcrumbList{
+		Context: "https://schema.org",
+		Type:    "BreadcrumbList",
+		ItemListElement: []struct {
+			Type     string `json:"@type"`
+			Position int    `json:"position"`
+			Item     struct {
+				Id   string `json:"@id"`
+				Name string `json:"name"`
+			} `json:"item"`
+		}{
+			{
+				Type:     "ListItem",
+				Position: 1,
+				Item: struct {
+					Id   string `json:"@id"`
+					Name string `json:"name"`
+				}{
+					Id:   "/autores",
+					Name: "Autores",
+				},
+			},
+			{
+				Type:     "ListItem",
+				Position: 2,
+				Item: struct {
+					Id   string `json:"@id"`
+					Name string `json:"name"`
+				}{
+					Id:   "/autores/" + autor.Id,
+					Name: autor.Nombre,
+				},
+			},
+		},
+	}
+
+	jsonldSlice := []interface{}{profilePage, breadcrumb}
+	jsonldBytes, _ := json.Marshal(jsonldSlice)
+	return string(jsonldBytes)
 }
