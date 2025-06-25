@@ -165,7 +165,7 @@ func buildAuthorJSONLD(autor models.Autor, trabajos models.Trabajos, posts model
 			Type:          "Article",
 			Headline:      t.Titulo,
 			Image:         "/static/images/" + t.Id + ".webp",
-			Url:           baseUrl() + "/papers/" + t.Id,
+			Url:           string(baseUrl()) + "/papers/" + t.Id,
 			DatePublished: t.Fecha_publicacion,
 		})
 	}
@@ -178,7 +178,7 @@ func buildAuthorJSONLD(autor models.Autor, trabajos models.Trabajos, posts model
 			Type:          "BlogPosting",
 			Headline:      p.Titulo,
 			Image:         "/static/images/" + p.Id + ".webp",
-			Url:           baseUrl() + "/post/" + p.Id,
+			Url:           string(baseUrl()) + "/post/" + p.Id,
 			DatePublished: p.Fecha_publicacion,
 		})
 	}
