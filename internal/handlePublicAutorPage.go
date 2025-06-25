@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"html/template"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -19,7 +20,7 @@ func (s *Server) handlePublicAutorPage() http.HandlerFunc {
 		Posts    models.Publicaciones
 		Trabajos models.Trabajos
 		Meta     PageMeta
-		JSONLD   string
+		JSONLD   template.JS
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -84,7 +85,7 @@ func (s *Server) handlePublicAutorPage() http.HandlerFunc {
 }
 
 // --- JSON-LD builder for author page ---
-func buildAuthorJSONLD(autor models.Autor, trabajos models.Trabajos, posts models.Publicaciones) string {
+func buildAuthorJSONLD(autor models.Autor, trabajos models.Trabajos, posts models.Publicaciones) template.JS {
 	type Person struct {
 		Context       string   `json:"@context"`
 		Type          string   `json:"@type"`
@@ -229,5 +230,5 @@ func buildAuthorJSONLD(autor models.Autor, trabajos models.Trabajos, posts model
 
 	jsonldSlice := []interface{}{profilePage, breadcrumb}
 	jsonldBytes, _ := json.Marshal(jsonldSlice)
-	return string(jsonldBytes)
+	return template.JS(jsonldBytes)
 }
