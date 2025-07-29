@@ -12,7 +12,6 @@ import (
 	"vigo360.es/new/internal/messages"
 
 	"github.com/gorilla/mux"
-	"github.com/kataras/hcaptcha"
 	"github.com/thanhpk/randstr"
 )
 
@@ -131,7 +130,7 @@ func (s *Server) SetupSecurityHeaders(router *mux.Router) *mux.Router {
 			}
 
 			// Add CSP only for regular pages
-			w.Header().Add("Content-Security-Policy", "default-src 'self'; script-src 'self' https://hcaptcha.com https://*.hcaptcha.com; style-src 'self' https://hcaptcha.com https://*.hcaptcha.com; frame-src https://hcaptcha.com https://*.hcaptcha.com; connect-src 'self' https://hcaptcha.com https://*.hcaptcha.com; worker-src 'none'; frame-ancestors 'none'; img-src 'self' data:; upgrade-insecure-requests; base-uri 'self'; object-src 'none'; form-action 'self';")
+			w.Header().Add("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self'; frame-src 'self'; connect-src 'self'; worker-src 'none'; frame-ancestors 'none'; img-src 'self' data:; upgrade-insecure-requests; base-uri 'self'; object-src 'none'; form-action 'self';")
 
 			next.ServeHTTP(w, r)
 		})
@@ -179,11 +178,7 @@ func (s *Server) SetupWebRoutes(router *mux.Router) *mux.Router {
 
 	newrouter.HandleFunc(`/post/{postid}`, s.handlePublicPostPage()).Methods(http.MethodGet)
 
-	var secretKey = os.Getenv("HCAPTCHA_SECRET")
-
-	var cli = hcaptcha.New(secretKey)
-
-	newrouter.HandleFunc(`/post/{postid}`, cli.HandlerFunc(s.handlePublicEnviarComentario())).Methods(http.MethodPost)
+	newrouter.HandleFunc(`/post/{postid}`, s.handlePublicEnviarComentario()).Methods(http.MethodPost)
 
 	newrouter.HandleFunc(`/tags`, s.handlePublicRedirectTags()).Methods(http.MethodGet)
 	newrouter.HandleFunc(`/tags/{tagid}`, s.handlePublicRedirectTagId()).Methods(http.MethodGet)

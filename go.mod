@@ -16,7 +16,6 @@ require (
 	github.com/chai2010/webp v1.4.0
 	github.com/go-playground/validator/v10 v10.26.0
 	github.com/jmoiron/sqlx v1.4.0
-	github.com/kataras/hcaptcha v0.0.2
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/thanhpk/randstr v1.0.6
 	golang.org/x/crypto v0.38.0

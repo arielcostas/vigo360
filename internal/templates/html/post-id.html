@@ -79,8 +79,6 @@
 			"inLanguage": "es-ES"
 		}
 	</script>
-
-    <script src="https://hcaptcha.com/1/api.js" async></script>
 </head>
 
 <body>
@@ -296,7 +294,6 @@
     <input type="hidden" name="padre" value="{{ . }}">
     <p>Para evitar el spam, revisaremos tu comentario, y no será visible hasta que lo aprobemos.</p>
     <div id="comment-send">
-        <div class="h-captcha" data-sitekey="81fcc2fa-fc6b-4ce0-aa37-cb05060e4b23"></div>
         <button class="button button-primary" type="submit">Enviar</button>
     </div>
 </form>
@@ -309,7 +306,6 @@
     <input type="hidden" name="padre" value="{{ . }}">
     <p>Tu comentario será publicado inmediatamente, pero solo por ser tú. 😉</p>
     <div id="comment-send">
-        <div class="h-captcha" data-sitekey="81fcc2fa-fc6b-4ce0-aa37-cb05060e4b23"></div>
         <button class="button button-primary" type="submit">Enviar</button>
     </div>
 </form>
