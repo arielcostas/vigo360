@@ -59,6 +59,16 @@ func (s *Server) handlePublicEnviarComentario() http.HandlerFunc {
 
 		logger.Information("guardado comentario con ID %s", nc.Id)
 
+		// Crear cookie temporal para mostrar mensaje de éxito
+		cookie := &http.Cookie{
+			Name:     "comentario_enviado",
+			Value:    "true",
+			Path:     "/",
+			HttpOnly: true,
+			MaxAge:   30, // 30 segundos, suficiente para la redirección
+		}
+		http.SetCookie(w, cookie)
+
 		w.Header().Add("Location", r.URL.Path)
 		defer w.WriteHeader(http.StatusSeeOther)
 	}

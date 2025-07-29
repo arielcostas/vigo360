@@ -20,6 +20,7 @@ func (s *Server) handlePublicPostPage() http.HandlerFunc {
 		Comentarios     []service.ComentarioTree
 		Recommendations []Sugerencia
 		Meta            PageMeta
+		CommentSent     bool
 	}
 
 	var cs = service.NewComentarioService(s.store.comentario, s.store.publicacion)
@@ -37,6 +38,21 @@ func (s *Server) handlePublicPostPage() http.HandlerFunc {
 		}
 
 		req_post_id := mux.Vars(r)["postid"]
+
+		// Verificar si se envió un comentario usando cookie temporal
+		commentSent := false
+		if cookie, err := r.Cookie("comentario_enviado"); err == nil && cookie.Value == "true" {
+			commentSent = true
+			// Eliminar la cookie después de leerla
+			expiredCookie := &http.Cookie{
+				Name:     "comentario_enviado",
+				Value:    "",
+				Path:     "/",
+				HttpOnly: true,
+				MaxAge:   -1, // Elimina la cookie inmediatamente
+			}
+			http.SetCookie(w, expiredCookie)
+		}
 
 		var post models.Publicacion
 		if np, err := s.store.publicacion.ObtenerPorId(req_post_id, true); err != nil {
@@ -87,6 +103,7 @@ func (s *Server) handlePublicPostPage() http.HandlerFunc {
 			LoggedIn:        loggedIn,
 			Recommendations: recommendations,
 			Comentarios:     ct,
+			CommentSent:     commentSent,
 			Meta: PageMeta{
 				Titulo:      post.Titulo,
 				Descripcion: post.Resumen,

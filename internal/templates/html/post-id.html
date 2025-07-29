@@ -213,6 +213,12 @@
         {{ end }}
 
         <section id="comment-section-container">
+            {{ if .CommentSent }}
+            <div id="comment-success-alert" class="alert alert-success">
+                <span class="alert-icon">✓</span>
+                <span class="alert-message">Tu comentario ha sido enviado correctamente</span>
+            </div>
+            {{ end }}
             <h2 id="comment_section_header">Comentarios</h2>
             <div id="comment_container">
                 {{ if eq (len .Comentarios) 0 }}
