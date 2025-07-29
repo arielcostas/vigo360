@@ -14,7 +14,7 @@ require (
 	github.com/Masterminds/sprig/v3 v3.3.0
 	github.com/algolia/algoliasearch-client-go/v3 v3.31.4
 	github.com/chai2010/webp v1.4.0
-	github.com/go-playground/validator/v10 v10.26.0
+	github.com/go-playground/validator/v10 v10.27.0
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/thanhpk/randstr v1.0.6
