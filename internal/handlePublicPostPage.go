@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
-	"os"
 
 	"github.com/gorilla/mux"
 	"vigo360.es/new/internal/logger"
